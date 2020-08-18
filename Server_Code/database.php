@@ -2,7 +2,7 @@
 //declare variables for db connection
 $servername = "localhost:3306";
 $username = "datasource";
-$password = "k9Iis8G6P0l";
+$password = "DBPASSWORD";
 $dbname = "SensorData";
 
 //db connection
