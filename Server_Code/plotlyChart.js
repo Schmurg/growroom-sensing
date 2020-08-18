@@ -50,8 +50,6 @@ $(document).ready(function () {
               }
             ];
 
-            //console.log(timeVar);
-
             var layout = {
               title: {
                 text:'Sensor Data (Run: '+runVar+')',
