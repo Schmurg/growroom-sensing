@@ -12,10 +12,12 @@
 #define BME_CS 9
 
 int    HTTP_PORT   = 80;
-char   HOST_NAME[] = "hamilton";
+char   HOST_NAME[] = "SERVER";
 
-char ssid[] = "DoorsOfPerception";
-char pass[] = "8492273584017762";
+// WIFI data
+char ssid[] = "SSID";
+char pass[] = "PASSWORD";
+
 int status = WL_IDLE_STATUS;  
 
 WiFiClient client;
