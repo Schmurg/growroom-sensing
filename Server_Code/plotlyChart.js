@@ -1,33 +1,24 @@
-// Declare variables to hold the data
-var timeVar = []; // X Axis Label
-var temperatureVar = []; // Value and Y Axis basis
-var BMEtemperatureVar = [];
+var timeVar = []; // X Axis Label 
+var BMEtemperatureVar = []; // Value and Y Axis basis
 var BMEpressureVar = [];
 var BMEhumidityVar = [];
 var runVar;
 
 $(document).ready(function () {
-    // Call 'database.php' to output sensing data. Then push data into local variables.
     $.post("database.php",
         function (data){
+            //console.log(data);
             jsData = JSON.parse(data);
             runVar = jsData[0].Run;
             for (var i in jsData) {
-                // temperature and time are taken from JSON output (see above)
-                temperatureVar.push(jsData[i].Temperature);
+                // temperature, pressure, humidity, and time are taken from JSON output (see above)
                 BMEtemperatureVar.push(jsData[i].BME_Temperature);
                 BMEhumidityVar.push(jsData[i].BME_Humidity);
                 BMEpressureVar.push(jsData[i].BME_Pressure);
                 timeVar.push(jsData[i].Time);
+                //console.log(jsData[i].Time);
+                //console.log(jsData[i].Temperature);
             }
-            // Set up the plots
-            var temperaturePlotData = [
-              {
-                x: timeVar,
-                y: temperatureVar,
-                type: 'scatter'
-              }
-            ];
             var BMEtemperaturePlotData = [
               {
                 x: timeVar,
@@ -49,7 +40,7 @@ $(document).ready(function () {
                 type: 'scatter'
               }
             ];
-            // Define general layout for all plots.
+
             var layout = {
               title: {
                 text:'Sensor Data (Run: '+runVar+')',
@@ -91,10 +82,6 @@ $(document).ready(function () {
                 }
               }
             };
-            // Specific layouts for relayout'ing the general layout to display specific titles and axis names.
-            var layoutTemperature = {
-                title: 'Temperature'
-            };
             var layoutBMETemperature = {
                 title: 'Temperature (BME)'
             };
@@ -134,9 +121,7 @@ $(document).ready(function () {
                     }
                   }
             };
-            // Call Plotly.js to create the plots and send them to assigned divs.
-            Plotly.newPlot('temperature', temperaturePlotData, layout);
-            Plotly.relayout('temperature', layoutTemperature);
+
             Plotly.newPlot('BMEtemperature', BMEtemperaturePlotData, layout);
             Plotly.relayout('BMEtemperature', layoutBMETemperature);
             Plotly.newPlot('BMEpressure', BMEpressurePlotData, layout);

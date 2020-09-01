@@ -1,22 +1,34 @@
+/***
+ * Much of the following code is taken from an Adafruit library overwritten with 
+ * 
+ * """
+ * This is a library for the BME280 humidity, temperature & pressure sensor
+
+  Designed specifically to work with the Adafruit BME280 Breakout
+  ----> http://www.chmodadafruit.com/products/2650  [...]
+ * """"
+ */
+
 #include <Wire.h>
 #include <SPI.h>
 #include <WiFi101.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 
+// SECRETS.h defines int HTTP_PORT, char HOST_NAME[], char ssid[], and char pass[] 
+#include "SECRETS.h"
 
-#define PIN_TEMP A0
+/**
+Yet to be used...
+**/
+// Pin Po of the pH board connects to A0 (in the future)
+// #define PIN_PH_Po A0
+
 #define BME_SCK 12
 #define BME_MISO 10
 #define BME_MOSI 11 
 #define BME_CS 9
 
-int    HTTP_PORT   = 80;
-char   HOST_NAME[] = "SERVER";
-
-// WIFI data
-char ssid[] = "SSID";
-char pass[] = "PASSWORD";
 
 int status = WL_IDLE_STATUS;  
 
@@ -28,8 +40,6 @@ Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO,  BME_SCK);
 
 void setup()
 {
-  pinMode(PIN_TEMP, INPUT);
-
   Serial.begin(9600);
   delay(1500);
 /***
@@ -37,25 +47,22 @@ void setup()
  */
 unsigned BME_status;
     
-// default settings
+// Default settings with address 0x76
 BME_status = bme.begin(0x76);  
-// You can also pass in a Wire library object like &Wire2
-// BME_status = bme.begin(0x76, &Wire2)
 if (!BME_status) {
-    Serial.println("Could not find a valid BME280 sensor, check wiring, address, sensor ID!");
-    Serial.print("SensorID was: 0x"); Serial.println(bme.sensorID(),16);
-    Serial.print("        ID of 0xFF probably means a bad address, a BMP 180 or BMP 085\n");
-    Serial.print("   ID of 0x56-0x58 represents a BMP 280,\n");
-    Serial.print("        ID of 0x60 represents a BME 280.\n");
-    Serial.print("        ID of 0x61 represents a BME 680.\n");
-    while (1) delay(10);
+  // If the sensor could not be initialised the setup nevertheless continues.
+    Serial.println("Could not find a valid BME280 sensor!");
+    Serial.print("SensorID: 0x"); Serial.println(bme.sensorID(),16);
     }
-if(BME_status){Serial.print("Sensor seems to work. BME_Temperature = ");Serial.println(bme.readTemperature());}
+if(BME_status){Serial.println("Sensor seems to work.");}
 /*
  * Done initialising the BME280 sensor
  ***/
   
-  // Attempt to connect to Wifi network. This loop terminates only upon successful connection with the network.
+/***  
+ * Attempt to connect to Wifi network. This loop terminates only upon successful connection with the network since 
+ * the operation loop is pointless without Wifi connection. 
+ */ 
   while (status != WL_CONNECTED) {
     Serial.print("Attempting to connect to SSID: ");
     Serial.println(ssid);
@@ -97,11 +104,9 @@ void loop () {
     Serial.println("Connected to server");
     // make a HTTP request:
     // send HTTP header
-    client.print("GET /addrow.php?Temperature=");
-    client.print(get_temperature());
-    //*** The value of 'Run' is hard-coded here 
-    client.print("&Run=GettingThere");
-    //***
+    client.print("GET /addrow.php?Run=GettingThere");
+    // The value of 'Run' is hard-coded here!!!
+
     client.print("&BME_Temperature=");
     client.print(bme.readTemperature());
     client.print("&BME_Humidity=");
@@ -114,18 +119,9 @@ void loop () {
     client.println(); // end HTTP header
     
     client.stop();
-    delay(10000);
+    delay(60000);
   }
 }
-
-float get_temperature(){ 
-  int reading = analogRead(PIN_TEMP);   
-  float voltage = reading * 3.3; 
-  voltage /= 1024.0;  
-  // Print temperature in Celsius 
-  float temperatureC = (voltage - 0.5) * 100 ; //converting from 10 mv per degree wit 500 mV offset 
-  return temperatureC; 
-} 
 
 
 void printWifiStatus() {

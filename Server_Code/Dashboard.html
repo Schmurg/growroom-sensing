@@ -2,17 +2,20 @@
       PUBLIC "-//W3C//DTD HTML 4.01//EN"
       "http://www.w3.org/TR/html4/strict.dtd">
 <head>
+    <link rel="icon" 
+      type="image/png" 
+      href="favicon.ico">
     <link rel="stylesheet" type="text/css" href="instyle.css">
 
     <title>Growroom Sensors</title>
     <h1 style="text-align:center">Growroom Sensors</h1>
+    <!-- <h1 style="font-family='Courier New', Courier, monospace">Growroom Sensors</h1> -->
     <!-- Plotly.js -->
 	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
-<!-- These divs hold the plots generated with sensing data from the database. They are filled with content in 'plotlyChart.js'.-->
-<div id="temperature" style="width:90%;height:400px;"></div>
+<meta charset="UTF-8">
 <div id="BMEtemperature" style="width:90%;height:400px;"></div>
 <div id="BMEhumidity" style="width:90%;height:400px;"></div>
 <div id="BMEpressure" style="width:90%;height:400px;"></div>
