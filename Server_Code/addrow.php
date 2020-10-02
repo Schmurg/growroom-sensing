@@ -12,14 +12,33 @@
             die('Could not connect: ' . mysqli_error());
          }
          echo 'Connected successfully<br>';
-         $RUN = $_GET["Run"];
-         $BME_TEMPERATURE = $_GET["BME_Temperature"];
-         $BME_HUMIDITY = $_GET["BME_Humidity"];
-         $BME_PRESSURE = $_GET["BME_Pressure"];
-         $sql = 'INSERT INTO Data(Run, BME_Temperature, BME_Humidity, BME_Pressure) VALUES (\''.$RUN.'\','.$BME_TEMPERATURE.','.$BME_HUMIDITY.','.$BME_PRESSURE.');';
-         $result = mysqli_query($conn, $sql);
-         
-         mysqli_close($conn);
+         if(isset($_GET["pH"])){
+            $RUN = $_GET["Run"];
+            $LOCATION = $_GET["Location"];
+            $pH = $_GET["pH"];
+            $sql = 'INSERT INTO Data(Run, Location, pH) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$pH.');';
+            $result = mysqli_query($conn, $sql);
+            mysqli_close($conn);
+         } elseif(isset($_GET["EventType"])){
+            $RUN = $_GET["Run"];
+            $LOCATION = $_GET["Location"];
+            $EventType = $_GET["EventType"];
+            $EventDescription = $_GET["EventDescription"];
+            $sql = 'INSERT INTO Data(Run, Location, EventType, EventDescription) VALUES (\''.$RUN.'\',\''.$LOCATION.'\',\''.$EventType.'\',\''.$EventDescription.'\');';
+            $result = mysqli_query($conn, $sql);
+            mysqli_close($conn);   
+         } elseif(isset($_GET["Temperature"])){
+            $RUN = $_GET["Run"];
+            $LOCATION = $_GET["Location"];
+            $TEMPERATURE = $_GET["Temperature"];
+            $HUMIDITY = $_GET["Humidity"];
+            $PRESSURE = $_GET["Pressure"];
+            $sql = 'INSERT INTO Data(Run, Location, Temperature, Humidity, Pressure) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$TEMPERATURE.','.$HUMIDITY.','.$PRESSURE.');';
+            $result = mysqli_query($conn, $sql);
+            mysqli_close($conn);
+          }else{die('Required data not specified.');}
+          if($result){echo 'Written to database.';}
+          else{echo 'NOT written to database.';}
       ?>
    </body>
 </html>

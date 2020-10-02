@@ -11,7 +11,7 @@ if ($conn->connect_error) {
 } 
 
 //sql statement to run
-$sql = "SELECT Time, Run, BME_Temperature, BME_Humidity, BME_Pressure FROM Data;";
+$sql = "SELECT Time, Run, pH, Temperature, Humidity, Pressure FROM Data;";
 
 //run sql query and store into variable
 $result = mysqli_query($conn,$sql);
