@@ -12,29 +12,36 @@
 
 // Data wire is connected to digital pin 14
 #define ONE_WIRE_BUS 14
-
-#define SensorPin A0            //pH meter Analog output to Arduino Analog Input 0
+#define relaisControl 12
+#define pHSensorPin A0            //pH meter Analog output to Arduino Analog Input 0
+#define ECSensorPin A2
 #define ArrayLength  40    //times of collection
 
+
 int pHArray[ArrayLength];   //Store the average value of the sensor feedback
-int pHArrayIndex;
+int ECArray[ArrayLength];
+int ArrayIndex;
 int timeBetweenSamples = 100;
 int attempt;
 int maxAttempts = 10;
 
-int status = WL_IDLE_STATUS; 
+float Temperature;
+int relaisState;
+float targetTemp = 25;
+
+int status = WL_IDLE_STATUS;
 WiFiClient client;
 
 // Setup a oneWire instance to communicate with any OneWire devices
 OneWire oneWire(ONE_WIRE_BUS);
 
-// Pass the oneWire reference to the temperature sensor 
+// Pass the oneWire reference to the temperature sensor
 DallasTemperature sensors(&oneWire);
 
 
       /***
        * CALIBRATING THE PH SENSOR
-       *          
+       *
        * We get a smoothed out voltage from the probe and need to convert it to a pH value. For this we need calibration (see https://www.e-tinkers.com/2019/11/measure-ph-with-a-low-cost-arduino-ph-sensor-board/).
        * We assume a linear relationship between voltage and pH. Therefore we can calculate the pH of any voltage once we calculated
        * the slope of the graph using the values of the function at two points. We do this reversely: We have liquids with pH 4 (call its
@@ -42,19 +49,25 @@ DallasTemperature sensors(&oneWire);
        * The slope a is given by
        *        a = (pH4 - pH7) / (V_pH4 - V_pH7).
        * To calculate a in setup(), plug in the values we measured for the calibration liquids.
-       * To calculate 
+       * To calculate
        */
 
 float pH4, pH7, V_pH4, V_pH7, a;
-float pHValue, voltage;
+float pHValue, pHvoltage;
+
+float EC1, EC3, EC0, V_EC1, V_EC3, V_EC0, b;
+float ECValue, ECvoltage;
 
 
 void setup(void)
 {
-  pinMode(SensorPin,INPUT);
+  pinMode(pHSensorPin,INPUT);
+  pinMode(ECSensorPin,INPUT);
+  pinMode(relaisControl, OUTPUT);
   Serial.begin(9600);
   delay(1500);
 
+  digitalWrite(relaisControl, LOW);
   // Start the temperature sensor
   sensors.begin();
   /***
@@ -62,49 +75,102 @@ void setup(void)
    */
   pH4 = 4;
   pH7 = 7;
-  V_pH7 = 3.1;
-  V_pH4 = 1; // old: 0.9
-
+  V_pH7 = 3.0; // Change to 3.0 (voltage @ pH7: 3.02V)
+  V_pH4 = 0.9; //
   a = (pH4 - pH7) / (V_pH4 - V_pH7);
+
+  EC1 = 1.4;
+  EC3 = 2.8;
+  EC0 = 0;
+  V_EC1 = 0.3;
+  V_EC3 = 0.6;
+  V_EC0 = 0;
+
+  //b = (pH4 - pH7) / (V_pH4 - V_pH7);
+  b = 2.1 / 0.45;
 }
 void loop(void)
 {
-  pHArrayIndex = 0;
-  while(pHArrayIndex < ArrayLength)
+  Serial.println("    ***********************   ");
+  Serial.println();
+  Serial.println();
+  Serial.println();
+  ArrayIndex = 0;
+  while(ArrayIndex < ArrayLength)
   {
-    pHArray[pHArrayIndex]=analogRead(SensorPin);
-    pHArrayIndex++;
+    pHArray[ArrayIndex]=analogRead(pHSensorPin);
+    ECArray[ArrayIndex]=analogRead(ECSensorPin);
+    ArrayIndex++;
     delay(timeBetweenSamples);
   }
-  voltage = averageArray(pHArray, ArrayLength)*5.0/1024; // These factors cancel, this can be written more simple!
+  pHvoltage = averageArray(pHArray, ArrayLength)*5.0/1024; // These factors cancel, this can be written more simple!
       /***
        * We have the voltage and calculate the pH according to the following equation:
        *        pHValue = a * (voltage-V_pH7) + pH7
        */
-  pHValue = a * (voltage-V_pH7) + pH7;
-  Serial.print("Voltage:");
-  Serial.print(voltage,2);// Serial.print(voltage, 2) prints 2 decimal places
-  Serial.print("    pH value: ");
-  Serial.println(pHValue,2);
+  pHValue = a * (pHvoltage-V_pH7) + pH7;
+  Serial.print("    pH:     ");
+  Serial.print(pHValue,2);
+  Serial.print(" (voltage: ");
+  Serial.print(pHvoltage,2);// Serial.print(voltage, 2) prints 2 decimal places
+  Serial.println("V)");
+  Serial.println();
 
-  // Call sensors.requestTemperatures() to issue a global temperature request to all devices on the bus
-  sensors.requestTemperatures(); 
-  Serial.print("Temperature: ");
-  Serial.print(sensors.getTempCByIndex(0));
-  Serial.println(" ºC");
+
+  ECvoltage = averageArray(ECArray, ArrayLength)*5.0/1024; // These factors cancel, this can be written more simple!
+      /***
+       * We have the voltage and calculate the EC according to the equation above.
+       */
+  ECValue = b * ECvoltage;
+  Serial.print("    EC:     ");
+  Serial.print(ECValue,2);
+  Serial.print("mS/cm (voltage: ");
+  Serial.print(ECvoltage,2);// Serial.print(voltage, 2) prints 2 decimal places
+  Serial.println("V)");
+  Serial.println();
   
-  if(Serial.read() == 115){// 115 is the encoding of the letter 's' as int
-    writeDB(pHValue);
+  
+  relaisState = digitalRead(relaisControl);
+  if(Temperature <= targetTemp-1){digitalWrite(relaisControl, HIGH);}
+  else if(Temperature >= targetTemp+1){digitalWrite(relaisControl, LOW);}
+  else if(Temperature > targetTemp-1 && Temperature < targetTemp+1){
+    if(relaisState == HIGH){digitalWrite(relaisControl, HIGH);}
+    else {digitalWrite(relaisControl, LOW);}
+    }
+  else {digitalWrite(relaisControl, LOW);}
+
+  writeDB(pHValue, ECValue, Serial.read());
+  Serial.println();
+  Serial.println("***   p    *** Save pH value to database.");
+  Serial.println("***   e    *** Save EC value to database.");
+  Serial.println();
+/***
+  if(Serial.read() == (char)1){// Save pH value
+    writeDB(pHValue, 1);
+    }
+  else if(Serial.read() == (char)2){// Save EC value
+    writeDB(ECValue, 2);
     }
   else{
     Serial.println();
-    Serial.println("***   Press \'s\' to save pH value to database.   ***");
+    Serial.println("***   1    *** Save pH value to database.");
+    Serial.println("***   2    *** Save EC value to database.");
     Serial.println();
     }
+***/
+  // Call sensors.requestTemperatures() to issue a global temperature request to all devices on the bus
+  sensors.requestTemperatures();
+  Temperature = sensors.getTempCByIndex(0);
+  Serial.print("Temperature in medium: ");
+  Serial.print(Temperature);
+  Serial.println(" degree Celsius");
 }
 
 
-void writeDB(float pHvalue){
+void writeDB(float pHvalue, float ECvalue, char type){
+  if(type != 'p' && type != 'e'){ // If p or c were not read the write operation should be aborted without connecting with the server.
+    return;
+  }
   // Attempt to connect to network maxAttempts times.
   attempt = 0;
   while (WiFi.status() != WL_CONNECTED && attempt < maxAttempts) {
@@ -130,14 +196,22 @@ void writeDB(float pHvalue){
       // send HTTP header
       client.print("GET /addrow.php?Run=GettingThere&Location=Mother");
       // The value of 'Run' and 'Location' are hard-coded here!!!
-        
-      client.print("&pH=");
-      client.print(pHvalue);
+      if(type == 'p'){
+        client.print("&pH=");
+        client.print(pHvalue);
+        }
+      else if(type == 'e'){
+        client.print("&EC=");
+        client.print(ECvalue);
+      }
+      else{
+        return;
+      }
       client.println(" HTTP/1.1");
       client.println("Host: " + String(HOST_NAME));
       client.println("Connection: close");
       client.println(); // end HTTP header
-      
+
       client.stop();
       Serial.println();
       Serial.println("***   Data sent to server.   ***");

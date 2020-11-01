@@ -19,7 +19,16 @@
             $sql = 'INSERT INTO Data(Run, Location, pH) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$pH.');';
             $result = mysqli_query($conn, $sql);
             mysqli_close($conn);
-         } elseif(isset($_GET["EventType"])){
+         }
+         elseif(isset($_GET["EC"])){
+            $RUN = $_GET["Run"];
+            $LOCATION = $_GET["Location"];
+            $EC = $_GET["EC"];
+            $sql = 'INSERT INTO Data(Run, Location, EC) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$EC.');';
+            $result = mysqli_query($conn, $sql);
+            mysqli_close($conn);
+         }
+         elseif(isset($_GET["EventType"])){
             $RUN = $_GET["Run"];
             $LOCATION = $_GET["Location"];
             $EventType = $_GET["EventType"];

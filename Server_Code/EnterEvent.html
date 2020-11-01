@@ -1,0 +1,36 @@
+<!DOCTYPE html 
+      PUBLIC "-//W3C//DTD HTML 4.01//EN"
+      "http://www.w3.org/TR/html4/strict.dtd">
+
+<style>
+    label textarea{
+        vertical-align: middle;
+    }
+</style> 
+
+<head>
+    <link rel="icon" 
+      type="image/png" 
+      href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="instyle.css">
+
+    <title>growroom-sensing &mdash; Enter event</title>
+    <h1 style="text-align:center">growroom-sensing <br> Enter event</h1>
+</head>
+
+
+<form action="add_event.php" method="post">
+    <input type="radio" id="fresh_water" name="event_type" value="fresh_water">
+    <label for="fresh_water">Fresh water</label><br>
+    <input type="radio" id="refill" name="event_type" value="refill">
+    <label for="refill">Refill</label><br>
+    <input type="radio" id="other" name="event_type" value="other">
+    <label for="other">Other</label> <br><br>
+
+    <label for="event_description">Event description: 
+        <textarea id="event_description" name="event_description" rows="4" cols="50"></textarea>
+    </label><br><br>
+    <input type="submit" value="Submit">
+</form> 
+
+</html>
