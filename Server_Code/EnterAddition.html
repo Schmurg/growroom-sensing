@@ -1,0 +1,29 @@
+<!DOCTYPE html 
+      PUBLIC "-//W3C//DTD HTML 4.01//EN"
+      "http://www.w3.org/TR/html4/strict.dtd">
+
+<style>
+    label textarea {
+        vertical-align: middle;
+    }
+</style>
+
+<head>
+    <link rel="icon" type="image/png" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="instyle.css">
+
+    <title>growroom-sensing &mdash; Enter addition</title>
+    <h1 style="text-align:center">growroom-sensing <br> Enter addition</h1>
+</head>
+
+
+<form action="add_addition.php" method="post">
+    <input type="radio" id="fertiliser" name="addition_type" value="fertiliser">
+    <label for="fertiliser">Fertiliser</label><br>
+    <input type="radio" id="pHminus" name="addition_type" value="pHminus" checked>
+    <label for="pHminus">pH-</label><br>
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+
+</html>

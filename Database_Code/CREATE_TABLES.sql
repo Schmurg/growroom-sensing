@@ -1,7 +1,7 @@
 -- https://gitlab.com/williamyaoh/haskell-web-stack/-/blob/master/tables.sql
 -- Returning assigned ID http://www.sqlines.com/postgresql/datatypes/serial
 
-DROP TABLE IF EXISTS Temperatures; DROP TABLE IF EXISTS Pressures; DROP TABLE IF EXISTS Humidities; DROP TABLE IF EXISTS pHs; DROP TABLE IF EXISTS Runs; DROP TABLE IF EXISTS Locations;
+DROP TABLE IF EXISTS Temperatures; DROP TABLE IF EXISTS Pressures; DROP TABLE IF EXISTS Humidities; DROP TABLE IF EXISTS pHs; DROP TABLE IF EXISTS ECs; DROP TABLE IF EXISTS pHminus_additions; DROP TABLE IF EXISTS fertiliser_additions; DROP TABLE IF EXISTS Runs; DROP TABLE IF EXISTS Locations;
 
 CREATE TABLE Runs (
     Run VARCHAR(30) NOT NULL,
@@ -61,6 +61,27 @@ CREATE TABLE pHs (
 
 CREATE TABLE ECs (
     EC FLOAT NOT NULL,
+    Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+    Run VARCHAR(30) NOT NULL,
+    Location VARCHAR(30) NOT NULL,
+    FOREIGN KEY (Run) REFERENCES Runs(Run),
+    FOREIGN KEY (Location) REFERENCES Locations(Location)
+);
+
+-- The amounts of pH- and fertiliser additions are given in ml/10l
+CREATE TABLE pHminus_additions (
+    Amount FLOAT NOT NULL,
+    Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+    Run VARCHAR(30) NOT NULL,
+    Location VARCHAR(30) NOT NULL,
+    FOREIGN KEY (Run) REFERENCES Runs(Run),
+    FOREIGN KEY (Location) REFERENCES Locations(Location)
+);
+
+CREATE TABLE fertiliser_additions (
+    Micro FLOAT,
+    Grow FLOAT,
+    Bloom FLOAT,
     Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
     Run VARCHAR(30) NOT NULL,
     Location VARCHAR(30) NOT NULL,
