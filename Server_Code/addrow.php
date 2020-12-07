@@ -3,7 +3,7 @@
 <html>
    <body>
       <?php
-         include 'SECRETS.php';
+         include '../misc/SECRETS.php';
          // SECRETS.php defines $dbhost, $dbuser, $dbpass, and $dbname
 
          $conn = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname);
@@ -15,8 +15,9 @@
          if(isset($_GET["pH"])){
             $RUN = $_GET["Run"];
             $LOCATION = $_GET["Location"];
+            $PROBE = $_GET["Probe"];
             $pH = $_GET["pH"];
-            $sql = 'INSERT INTO Data(Run, Location, pH) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$pH.');';
+            $sql = 'INSERT INTO pHs(Run, Location, Probe, pH) VALUES (\''.$RUN.'\',\''.$LOCATION.'\',\''.$PROBE.'\','.$pH.');';
             $result = mysqli_query($conn, $sql);
             mysqli_close($conn);
          }
@@ -24,7 +25,7 @@
             $RUN = $_GET["Run"];
             $LOCATION = $_GET["Location"];
             $EC = $_GET["EC"];
-            $sql = 'INSERT INTO Data(Run, Location, EC) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$EC.');';
+            $sql = 'INSERT INTO ECs(Run, Location, EC) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$EC.');';
             $result = mysqli_query($conn, $sql);
             mysqli_close($conn);
          }

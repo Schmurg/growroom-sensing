@@ -18,8 +18,8 @@
 <!-- <h3 style="color: #808080;font-family: 'Courier New', Courier, monospace;"> -->
 <label for="nr_days" style="color: #808080;font-family: 'Courier New', Courier, monospace;">Select range
   <select id="nr_days" onchange="location.reload()">
-    <option value="1">1 day</option>
-    <option value="7" selected="selected">1 week</option>
+    <option value="1" selected="selected">1 day</option>
+    <option value="7">1 week</option>
     <option value="14">2 weeks</option>
   </select>
 </label>
@@ -28,9 +28,6 @@
 <div id="temperature" style="width:90%;height:400px;"></div>
 <div id="humidity" style="width:90%;height:400px;"></div>
 <div id="pH" style="width:90%;height:400px;"></div>
-<div id="EC" style="width:90%;height:400px;"></div>
-<div id="pressure" style="width:90%;height:400px;"></div>
-<div id="event" style="width:90%;height:400px;"></div>
 <script src="plotlyChart.js"></script>
 
 </html>

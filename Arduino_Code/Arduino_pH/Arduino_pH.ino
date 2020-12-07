@@ -58,6 +58,7 @@ float pHValue, pHvoltage;
 float EC1, EC3, EC0, V_EC1, V_EC3, V_EC0, b;
 float ECValue, ECvoltage;
 
+unsigned long before;
 
 void setup(void)
 {
@@ -66,6 +67,7 @@ void setup(void)
   pinMode(relaisControl, OUTPUT);
   Serial.begin(9600);
   delay(1500);
+  before = millis();
 
   digitalWrite(relaisControl, LOW);
   // Start the temperature sensor
@@ -144,20 +146,12 @@ void loop(void)
   Serial.println("***   p    *** Save pH value to database.");
   Serial.println("***   e    *** Save EC value to database.");
   Serial.println();
-/***
-  if(Serial.read() == (char)1){// Save pH value
-    writeDB(pHValue, 1);
-    }
-  else if(Serial.read() == (char)2){// Save EC value
-    writeDB(ECValue, 2);
-    }
-  else{
-    Serial.println();
-    Serial.println("***   1    *** Save pH value to database.");
-    Serial.println("***   2    *** Save EC value to database.");
-    Serial.println();
-    }
-***/
+
+  // Save pH to database every 5 minute (5*60*1000 = 300.000)
+  if(millis()-before>300000 || millis()<before){
+    before = millis();
+    writeDB(pHValue, ECValue, 'p');
+  }
   // Call sensors.requestTemperatures() to issue a global temperature request to all devices on the bus
   sensors.requestTemperatures();
   Temperature = sensors.getTempCByIndex(0);
@@ -194,10 +188,10 @@ void writeDB(float pHvalue, float ECvalue, char type){
       Serial.println("Connected to server");
       // make a HTTP request:
       // send HTTP header
-      client.print("GET /addrow.php?Run=GettingThere&Location=Mother");
+      client.print("GET /addrow.php?Run=No1&Location=girls");
       // The value of 'Run' and 'Location' are hard-coded here!!!
       if(type == 'p'){
-        client.print("&pH=");
+        client.print("&Probe=black&pH=");
         client.print(pHvalue);
         }
       else if(type == 'e'){

@@ -24,8 +24,8 @@ INSERT INTO Locations VALUES ('mama'),('babies'),('girls');
 CREATE TABLE Temperatures (
     Temperature FLOAT NOT NULL,
     Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    Run VARCHAR(30),
-    Location VARCHAR(30),
+    Run VARCHAR(30) NOT NULL,
+    Location VARCHAR(30) NOT NULL,
     Medium ENUM('air','water','rockwool') NOT NULL,
     FOREIGN KEY (Run) REFERENCES Runs(Run),
     FOREIGN KEY (Location) REFERENCES Locations(Location)
