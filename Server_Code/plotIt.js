@@ -24,7 +24,6 @@ $(document).ready(function() {
                 y: pHVar,
                 type: 'scatter'
             }];
-            console.log("Still here!");
             for (var ps in pHData) {
                 console.log(pHData[ps]);
             }
@@ -32,6 +31,42 @@ $(document).ready(function() {
 
             Plotly.newPlot(document.getElementById('pH'), pHData, layout);
             Plotly.relayout('pH', layoutpH);
+        });
+
+    $.post("database.php", { nr_days: days, type: "Temperature" },
+        function(data) {
+            timeVar = [];
+            jsData = JSON.parse(data);
+            for (var i in jsData) {
+                temperatureVar.push(jsData[i].Temperature);
+                timeVar.push(jsData[i].Time);
+            }
+            var temperatureData = [{
+                x: timeVar,
+                y: temperatureVar,
+                type: 'scatter'
+            }];
+
+            Plotly.newPlot(document.getElementById('temperature'), temperatureData, layout);
+            Plotly.relayout('temperature', layoutTemperature);
+        });
+
+    $.post("database.php", { nr_days: days, type: "Humidity" },
+        function(data) {
+            jsData = JSON.parse(data);
+            timeVar = [];
+            for (var i in jsData) {
+                humidityVar.push(jsData[i].Humidity);
+                timeVar.push(jsData[i].Time);
+            }
+            var humidityData = [{
+                x: timeVar,
+                y: humidityVar,
+                type: 'scatter'
+            }];
+
+            Plotly.newPlot(document.getElementById('humidity'), humidityData, layout);
+            Plotly.relayout('humidity', layoutHumidity);
         });
 });
 
@@ -57,14 +92,54 @@ var layout = {
             size: 14,
             color: 'black'
         }
-    }
+    },
+    font: {
+        family: 'Courier New, monospace',
+        size: 18,
+        color: '#7f7f7f'
+    },
+    paper_bgcolor: 'black',
+    plot_bgcolor: 'black'
 };
 
 var layoutpH = {
     title: 'pH',
+    font: {
+        family: 'Courier New, monospace',
+        size: 18,
+        color: '#7f7f7f'
+    },
     yaxis: {
         title: {
             text: 'pH value',
+            font: {
+                family: 'Courier New, monospace',
+                size: 18,
+                color: '#7f7f7f'
+            }
+        }
+    }
+};
+
+var layoutTemperature = {
+    title: 'Temperature',
+    yaxis: {
+        title: {
+            text: '° C',
+            font: {
+                family: 'Courier New, monospace',
+                size: 18,
+                color: '#7f7f7f'
+            }
+        }
+    }
+};
+
+var layoutHumidity = {
+    title: 'Humidity',
+    yaxis: {
+        title: {
+            text: 'rel. Humidity (%)',
             font: {
                 family: 'Courier New, monospace',
                 size: 18,

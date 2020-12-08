@@ -29,22 +29,19 @@
             $result = mysqli_query($conn, $sql);
             mysqli_close($conn);
          }
-         elseif(isset($_GET["EventType"])){
-            $RUN = $_GET["Run"];
-            $LOCATION = $_GET["Location"];
-            $EventType = $_GET["EventType"];
-            $EventDescription = $_GET["EventDescription"];
-            $sql = 'INSERT INTO Data(Run, Location, EventType, EventDescription) VALUES (\''.$RUN.'\',\''.$LOCATION.'\',\''.$EventType.'\',\''.$EventDescription.'\');';
-            $result = mysqli_query($conn, $sql);
-            mysqli_close($conn);   
-         } elseif(isset($_GET["Temperature"])){
+         elseif(isset($_GET["Temperature"])){
             $RUN = $_GET["Run"];
             $LOCATION = $_GET["Location"];
             $TEMPERATURE = $_GET["Temperature"];
             $HUMIDITY = $_GET["Humidity"];
             $PRESSURE = $_GET["Pressure"];
-            $sql = 'INSERT INTO Data(Run, Location, Temperature, Humidity, Pressure) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$TEMPERATURE.','.$HUMIDITY.','.$PRESSURE.');';
-            $result = mysqli_query($conn, $sql);
+            //$sql = 'INSERT INTO Temperatures (Run, Location, Temperature, Humidity, Pressure) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$TEMPERATURE.','.$HUMIDITY.','.$PRESSURE.');';
+            $sql1 = 'INSERT INTO Temperatures (Run, Location, Temperature, Medium) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$TEMPERATURE.', \'air\');';
+            $sql2 = 'INSERT INTO Humidities (Run, Location, Humidity) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$HUMIDITY.');';
+            $sql3 = 'INSERT INTO Pressures (Run, Location, Pressure) VALUES (\''.$RUN.'\',\''.$LOCATION.'\','.$PRESSURE.');';
+            $result = mysqli_query($conn, $sql1);
+            mysqli_query($conn, $sql2);
+            mysqli_query($conn, $sql3);
             mysqli_close($conn);
           }else{die('Required data not specified.');}
           if($result){echo 'Written to database.';}

@@ -70,8 +70,8 @@ void loop()
     Serial.println("Connected to server");
     // make a HTTP request:
     // send HTTP header
-    client.print("GET /addrow.php?Run=GettingThere");
-    client.print("&Location=Mother");
+    client.print("GET /addrow.php?Run=No1");
+    client.print("&Location=girls");
     // The value of 'Run' and 'Location' is hard-coded here!!!
 
     client.print("&Temperature=");
@@ -94,7 +94,7 @@ void loop()
   // Wait a bit before sensing again
   printValues();
   // Wait 5 minutes, so data points are 5 minutes apart. 
-  delay(5*60000);
+  delay(0.5*60000);
 }
 
 

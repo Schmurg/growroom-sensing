@@ -6,6 +6,7 @@
     <link rel="icon" type="image/png" href="favicon.ico">
     <link rel="stylesheet" type="text/css" href="instyle.css">
 
+
     <title>Growroom Sensors</title>
     <h1 style="text-align:center">Growroom Sensors</h1>
     <!-- <h1 style="font-family='Courier New', Courier, monospace">Growroom Sensors</h1> -->
@@ -16,18 +17,21 @@
 
 <meta charset="UTF-8">
 <!-- <h3 style="color: #808080;font-family: 'Courier New', Courier, monospace;"> -->
-<label for="nr_days" style="color: #808080;font-family: 'Courier New', Courier, monospace;">Select range
-  <select id="nr_days" onchange="location.reload()">
-    <option value="1" selected="selected">1 day</option>
-    <option value="7">1 week</option>
-    <option value="14">2 weeks</option>
-  </select>
-</label>
+
+<body bgcolor="black">
+    <label for="nr_days" style="color: #808080;font-family: 'Courier New', Courier, monospace;">Select range
+        <select id="nr_days" onchange="location.reload()">
+            <option value="1" selected="selected">1 day</option>
+            <option value="7">1 week</option>
+            <option value="14">2 weeks</option>
+        </select>
+    </label>
 
 
-<div id="temperature" style="width:90%;height:400px;"></div>
-<div id="humidity" style="width:90%;height:400px;"></div>
-<div id="pH" style="width:90%;height:400px;"></div>
-<script src="plotlyChart.js"></script>
+    <div id="temperature" style="width:90%;height:400px;"></div>
+    <div id="humidity" style="width:90%;height:400px;"></div>
+    <div id="pH" style="width:90%;height:400px;"></div>
+    <script src="plotIt.js"></script>
+</body>
 
 </html>
