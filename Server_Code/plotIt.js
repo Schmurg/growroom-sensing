@@ -83,8 +83,9 @@ var layout = {
         tickfont: {
             family: 'Courier New, monospace',
             size: 14,
-            color: 'black'
-        }
+            color: '#7f7f7f'
+        },
+        gridcolor: '#7f7f7f'
     },
     yaxis: {
         tickfont: {
@@ -117,7 +118,8 @@ var layoutpH = {
                 size: 18,
                 color: '#7f7f7f'
             }
-        }
+        },
+        gridcolor: '#7f7f7f'
     }
 };
 
@@ -131,7 +133,8 @@ var layoutTemperature = {
                 size: 18,
                 color: '#7f7f7f'
             }
-        }
+        },
+        gridcolor: '#7f7f7f'
     }
 };
 
@@ -145,6 +148,7 @@ var layoutHumidity = {
                 size: 18,
                 color: '#7f7f7f'
             }
-        }
+        },
+        gridcolor: '#7f7f7f'
     }
 };
