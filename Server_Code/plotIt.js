@@ -11,23 +11,17 @@ $(document).ready(function() {
     var days = e.value;
     $.post("database.php", { nr_days: days, type: "pH" },
         function(data) {
+            timeVar = [];
             jsData = JSON.parse(data);
             for (var i in jsData) {
                 pHVar.push(jsData[i].pH);
                 timeVar.push(jsData[i].Time);
             }
-            console.log("Parsed " + pHVar.length + " pH...");
-            console.log("Latest pH:" + pHVar.pop() + " @ " + timeVar.pop());
-
             var pHData = [{
                 x: timeVar,
                 y: pHVar,
                 type: 'scatter'
             }];
-            for (var ps in pHData) {
-                console.log(pHData[ps]);
-            }
-            console.log(pHData.length);
 
             Plotly.newPlot(document.getElementById('pH'), pHData, layout);
             Plotly.relayout('pH', layoutpH);

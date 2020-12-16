@@ -151,6 +151,7 @@ void loop(void)
   if(millis()-before>300000 || millis()<before){
     before = millis();
     writeDB(pHValue, ECValue, 'p');
+    writeDB(pHValue, ECValue, 'e');
   }
   // Call sensors.requestTemperatures() to issue a global temperature request to all devices on the bus
   sensors.requestTemperatures();
@@ -191,7 +192,7 @@ void writeDB(float pHvalue, float ECvalue, char type){
       client.print("GET /addrow.php?Run=No1&Location=girls");
       // The value of 'Run' and 'Location' are hard-coded here!!!
       if(type == 'p'){
-        client.print("&Probe=black&pH=");
+        client.print("&Probe=blue&pH=");
         client.print(pHvalue);
         }
       else if(type == 'e'){

@@ -94,7 +94,7 @@ void loop()
   // Wait a bit before sensing again
   printValues();
   // Wait 5 minutes, so data points are 5 minutes apart. 
-  delay(0.5*60000);
+  delay(5*60000);
 }
 
 
